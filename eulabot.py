@@ -11,18 +11,18 @@ def run():
     # initialize
     tweet = None
 
-    # generate real tweet
-    while not tweet:
+    # 20 attempts to generate real tweet
+    for i in range(20):
         # make eula
         try:
-            text = gizer.run(length=500,
+            eula = gizer.run(length=500,
                              product='Eulagizer', company='Central Headquarters',
                              website='github.com/aschn/eulagizer')
         except RuntimeError:
             continue
 
         # split into sentences
-        sentences = [s.strip()+'.' for s in text.split('.')]
+        sentences = [s.strip()+'.' for s in eula.split('.')]
 
         # select sentences between 20 and 139 characters
         choices = filter(lambda s: len(s) > 20 and len(s) < 140, sentences)
@@ -30,15 +30,20 @@ def run():
         # if choices exist, choose one
         if choices:
             tweet = random.choice(choices)
+            break
 
     # send tweet
-    api = twitter.Api(consumer_key=os.environ.get('TWITTER_CONSUMER_KEY'),
-                      consumer_secret=os.environ.get('TWITTER_CONSUMER_SECRET'),
-                      access_token_key=os.environ.get('TWITTER_ACCESS_KEY'),
-                      access_token_secret=os.environ.get('TWITTER_ACCESS_SECRET'))
-    status = api.PostUpdate(tweet)
-    return status
+    if tweet:
+        api = twitter.Api(consumer_key=os.environ.get('TWITTER_CONSUMER_KEY'),
+                          consumer_secret=os.environ.get('TWITTER_CONSUMER_SECRET'),
+                          access_token_key=os.environ.get('TWITTER_ACCESS_KEY'),
+                          access_token_secret=os.environ.get('TWITTER_ACCESS_SECRET'))
+        api.PostUpdate(tweet)
+
+    # return
+    return tweet
 
 
 if __name__ == '__main__':
-    run()
+    tweet = run()
+    print tweet

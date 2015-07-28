@@ -14,9 +14,12 @@ def run():
     # generate real tweet
     while not tweet:
         # make eula
-        text = gizer.run(length=500,
-                         product='Eulagizer', company='Central Headquarters',
-                         website='github.com/aschn/eulagizer')
+        try:
+            text = gizer.run(length=500,
+                             product='Eulagizer', company='Central Headquarters',
+                             website='github.com/aschn/eulagizer')
+        except RuntimeError:
+            continue
 
         # split into sentences
         sentences = [s.strip()+'.' for s in text.split('.')]

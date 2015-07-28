@@ -35,3 +35,7 @@ def run():
                       access_token_secret=os.environ.get('TWITTER_ACCESS_SECRET'))
     status = api.PostUpdate(tweet)
     return status
+
+
+if __name__ == '__main__':
+    run()
